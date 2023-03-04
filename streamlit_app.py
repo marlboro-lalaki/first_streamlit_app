@@ -68,5 +68,5 @@ try:
 #   #streamlit.text(my_data_row)
 #   streamlit.dataframe(my_data_rows)
 
- except:
+except:
   streamlit.error()
