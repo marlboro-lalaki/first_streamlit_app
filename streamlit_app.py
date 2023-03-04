@@ -25,37 +25,48 @@ fruits_selected=streamlit.multiselect("Pick some Fruits:", list(my_fruit_list.in
 fruits_to_show = my_fruit_list.loc[fruits_selected]
 streamlit.dataframe(fruits_to_show)
 
-streamlit.header("Fruityvice Fruit Advice!")
-fruit_choice = streamlit.text_input('What fruit would you like information about?','Kiwi')
-streamlit.write('The user entered ', fruit_choice)
+#create the repeatable code block (called a function)
+def get_fruityvice_data(this_fruit_choice):
+  fruityvice_response = requests.get("https://fruityvice.com/api/fruit/"+ fruit_choice)
+  fruityvice_normalized = pandas.json_normalize(fruityvice_response.json())
+  return fruityvice_normalized
 
-fruityvice_response = requests.get("https://fruityvice.com/api/fruit/"+ fruit_choice)
+streamlit.header("Fruityvice Fruit Advice!")
+try: 
+  fruit_choice = streamlit.text_input('What fruit would you like information about?','Kiwi')
+  if not fruit_choice:
+    streamlit.error('please select a fruit to get information.')
+  else:
+    back_from_function = get_fruityvice_data(fruit_choice)
+    streamlit.dataframe(back_from_function)
+
+#fruityvice_response = requests.get("https://fruityvice.com/api/fruit/"+ fruit_choice)
 # streamlit.text(fruityvice_response.json())
 # write your own comment -what does the next line do? 
-fruityvice_normalized = pandas.json_normalize(fruityvice_response.json())
+#fruityvice_normalized = pandas.json_normalize(fruityvice_response.json())
 # write your own comment - what does this do?
-streamlit.dataframe(fruityvice_normalized)
+#streamlit.dataframe(fruityvice_normalized)
 
 #streamlit.stop()
-try:
-  my_cnx = snowflake.connector.connect(**streamlit.secrets["snowflake"])
-  my_cur = my_cnx.cursor()
-  add_cur = my_cnx.cursor()
 
-  add_fruit = streamlit.text_input('What fruit would you like add:')
-  if add_fruit != '':
-    streamlit.write('Thanks for adding ', add_fruit)
-    add_cur.execute("insert into  FRUIT_LOAD_LIST values ( %s )", (add_fruit))
+#   my_cnx = snowflake.connector.connect(**streamlit.secrets["snowflake"])
+#   my_cur = my_cnx.cursor()
+#   add_cur = my_cnx.cursor()
+
+#   add_fruit = streamlit.text_input('What fruit would you like add:')
+#   if add_fruit != '':
+#     streamlit.write('Thanks for adding ', add_fruit)
+#     add_cur.execute("insert into  FRUIT_LOAD_LIST values ( %s )", (add_fruit))
 
 
-  #my_cur.execute("SELECT CURRENT_USER(), CURRENT_ACCOUNT(), CURRENT_REGION()")
-  my_cur.execute("SELECT * from fruit_load_list")
-  #my_data_row = my_cur.fetchone()
-  my_data_rows = my_cur.fetchall()
-  #streamlit.text("Hello from Snowflake:")
-  streamlit.text("Fruit load list contains:")
-  #streamlit.text(my_data_row)
-  streamlit.dataframe(my_data_rows)
+#   #my_cur.execute("SELECT CURRENT_USER(), CURRENT_ACCOUNT(), CURRENT_REGION()")
+#   my_cur.execute("SELECT * from fruit_load_list")
+#   #my_data_row = my_cur.fetchone()
+#   my_data_rows = my_cur.fetchall()
+#   #streamlit.text("Hello from Snowflake:")
+#   streamlit.text("Fruit load list contains:")
+#   #streamlit.text(my_data_row)
+#   streamlit.dataframe(my_data_rows)
 
  except:
   streamlit.error()
