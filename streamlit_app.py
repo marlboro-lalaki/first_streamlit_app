@@ -48,7 +48,9 @@ try:
 #streamlit.dataframe(fruityvice_normalized)
 
 #streamlit.stop()
-
+except:
+  streamlit.error()
+  
 streamlit.header("The Fruit load list contains:")
 
 #snowflake-related functions
@@ -83,5 +85,4 @@ if streamlit.button('Get Fruit Load List'):
 #   #streamlit.text(my_data_row)
 #   streamlit.dataframe(my_data_rows)
 
-except:
-  streamlit.error()
+
