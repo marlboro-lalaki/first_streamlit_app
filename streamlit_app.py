@@ -34,6 +34,8 @@ fruityvice_response = requests.get("https://fruityvice.com/api/fruit/"+ fruit_ch
 fruityvice_normalized = pandas.json_normalize(fruityvice_response.json())
 # write your own comment - what does this do?
 streamlit.dataframe(fruityvice_normalized)
+
+#streamlit.stop()
 my_cnx = snowflake.connector.connect(**streamlit.secrets["snowflake"])
 my_cur = my_cnx.cursor()
 add_cur = my_cnx.cursor()
@@ -41,7 +43,6 @@ add_cur = my_cnx.cursor()
 add_fruit = streamlit.text_input('What fruit would you like add:')
 if add_fruit != '':
   streamlit.write('Thanks for adding ', add_fruit)
-
   add_cur.execute("insert into  FRUIT_LOAD_LIST values ( %s )", (add_fruit))
 
 
